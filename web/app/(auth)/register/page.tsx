@@ -2,8 +2,8 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth, type UserRole } from "@/lib/firebase/auth";
-import { User, Buildings, ArrowRight } from "@phosphor-icons/react";
+import { useAuth } from "@/lib/firebase/auth";
+import { Buildings, ArrowRight, WarningCircle } from "@phosphor-icons/react";
 
 const NIGERIA_STATES = [
   "Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno",
@@ -13,10 +13,38 @@ const NIGERIA_STATES = [
   "Yobe","Zamfara",
 ];
 
+function getFriendlyErrorMessage(err: unknown): string {
+  if (!err) return "Registration failed. Please try again.";
+  const msg = err instanceof Error ? err.message : String(err);
+  const code = (err as { code?: string })?.code || "";
+
+  if (code === "auth/invalid-api-key" || msg.includes("auth/invalid-api-key")) {
+    return "Firebase API key is missing or invalid. Please check NEXT_PUBLIC_FIREBASE_API_KEY in web/.env.local.";
+  }
+  if (code === "auth/operation-not-allowed" || msg.includes("operation-not-allowed")) {
+    return "Email/Password sign-in is disabled in your Firebase console. Go to Firebase Console > Authentication > Sign-in method and enable Email/Password.";
+  }
+  if (code === "auth/email-already-in-use" || msg.includes("email-already-in-use")) {
+    return "This email address is already registered. Please sign in instead.";
+  }
+  if (code === "auth/weak-password" || msg.includes("weak-password")) {
+    return "Password is too weak. Please use at least 8 characters.";
+  }
+  if (code === "auth/invalid-email" || msg.includes("invalid-email")) {
+    return "Please enter a valid email address.";
+  }
+  if (code === "auth/network-request-failed" || msg.includes("network-request-failed")) {
+    return "Network connection failed. Please check your internet connection.";
+  }
+  if (code === "permission-denied" || msg.includes("permission-denied")) {
+    return "Firestore permission error: Unable to create user profile. Please verify your firestore.rules.";
+  }
+  return msg || "Registration failed. Please try again.";
+}
+
 export default function RegisterPage() {
   const { signUp } = useAuth();
   const router = useRouter();
-  const [role, setRole] = useState<UserRole>("citizen");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,17 +53,35 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const isConfigMissing =
+    !process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY === "" ||
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY === "AIzaSyDummyKeyForBuildPurposeOnly000";
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
-    if (password.length < 8) { setError("Password must be at least 8 characters."); return; }
+
+    if (isConfigMissing) {
+      setError(
+        "Firebase is not yet configured. Please add NEXT_PUBLIC_FIREBASE_API_KEY to web/.env.local from your Firebase Console."
+      );
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
     setLoading(true);
     try {
-      await signUp(email, password, name, role, state, lga);
+      // Public registration is strictly for Citizens
+      await signUp(email, password, name, "citizen", state, lga);
       router.replace("/");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Registration failed.";
-      setError(msg.includes("email-already-in-use") ? "This email is already registered." : "Registration failed. Please try again.");
+      console.error("Registration failed:", err);
+      setError(getFriendlyErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -44,7 +90,7 @@ export default function RegisterPage() {
   return (
     <div style={{ width: "100%", maxWidth: 460 }}>
       {/* Logo */}
-      <div style={{ marginBottom: 32, textAlign: "center" }}>
+      <div style={{ marginBottom: 28, textAlign: "center" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -55,33 +101,31 @@ export default function RegisterPage() {
           </div>
           <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em" }}>Civic Right</span>
         </div>
-        <p style={{ color: "var(--text-muted)", fontSize: 14 }}>Create your account</p>
+        <p style={{ color: "var(--text-muted)", fontSize: 14 }}>Create your citizen account</p>
       </div>
 
-      {/* Role selector */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
-        {(["citizen", "government"] as UserRole[]).map((r) => (
-          <button
-            key={r}
-            type="button"
-            onClick={() => setRole(r)}
-            style={{
-              padding: "14px 16px",
-              borderRadius: "var(--radius-md)",
-              border: `1.5px solid ${role === r ? (r === "citizen" ? "var(--accent)" : "var(--accent-gov)") : "var(--border)"}`,
-              background: role === r ? (r === "citizen" ? "var(--accent-dim)" : "var(--accent-gov-dim)") : "var(--surface)",
-              color: role === r ? (r === "citizen" ? "var(--accent)" : "var(--accent-gov)") : "var(--text-secondary)",
-              cursor: "pointer",
-              display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-              fontWeight: 600, fontSize: 13,
-              transition: "all 0.18s ease",
-            }}
-          >
-            {r === "citizen" ? <User size={22} weight={role === r ? "fill" : "regular"} /> : <Buildings size={22} weight={role === r ? "fill" : "regular"} />}
-            {r === "citizen" ? "Citizen" : "Government"}
-          </button>
-        ))}
-      </div>
+      {isConfigMissing && (
+        <div style={{
+          background: "rgba(245,158,11,0.12)",
+          border: "1px solid rgba(245,158,11,0.3)",
+          borderRadius: "var(--radius-md)",
+          padding: "12px 14px",
+          marginBottom: 20,
+          color: "#FBBF24",
+          fontSize: 13,
+          display: "flex",
+          gap: 10,
+          alignItems: "flex-start",
+        }}>
+          <WarningCircle size={20} style={{ flexShrink: 0, marginTop: 1 }} />
+          <div>
+            <strong>Firebase setup required:</strong>
+            <p style={{ margin: "4px 0 0", fontSize: 12, lineHeight: 1.4, color: "var(--text-secondary)" }}>
+              Missing <code>NEXT_PUBLIC_FIREBASE_API_KEY</code> in <code>web/.env.local</code>. Copy your web app config from Firebase Console.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="card-bezel">
         <div className="card-bezel-inner" style={{ padding: 28 }}>
@@ -113,16 +157,39 @@ export default function RegisterPage() {
             </div>
 
             {error && (
-              <div style={{ background: "rgba(248,113,113,0.1)", border: "1px solid rgba(248,113,113,0.2)", borderRadius: "var(--radius-sm)", padding: "10px 14px", color: "var(--danger)", fontSize: 13 }}>
+              <div style={{ background: "rgba(248,113,113,0.1)", border: "1px solid rgba(248,113,113,0.2)", borderRadius: "var(--radius-sm)", padding: "10px 14px", color: "var(--danger)", fontSize: 13, lineHeight: 1.4 }}>
                 {error}
               </div>
             )}
 
-            <button type="submit" className={`btn ${role === "citizen" ? "btn-primary" : "btn-gov"}`} disabled={loading} style={{ width: "100%", justifyContent: "center", marginTop: 4 }}>
-              {loading ? "Creating account…" : "Create account"}
+            <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: "100%", justifyContent: "center", marginTop: 4 }}>
+              {loading ? "Creating account…" : "Create citizen account"}
               {!loading && <ArrowRight size={16} weight="bold" />}
             </button>
           </form>
+        </div>
+      </div>
+
+      {/* Internal government account notice */}
+      <div style={{
+        marginTop: 20,
+        padding: "14px 16px",
+        borderRadius: "var(--radius-md)",
+        background: "rgba(79,142,247,0.08)",
+        border: "1px solid rgba(79,142,247,0.18)",
+        fontSize: 13,
+        color: "var(--text-secondary)",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 12,
+      }}>
+        <Buildings size={22} color="var(--accent-gov)" style={{ flexShrink: 0, marginTop: 1 }} />
+        <div>
+          <div style={{ fontWeight: 600, color: "var(--accent-gov)" }}>Government official?</div>
+          <p style={{ margin: "3px 0 0", fontSize: 12, lineHeight: 1.45, color: "var(--text-secondary)" }}>
+            Official accounts are provisioned internally by department administrators.
+            Please <Link href="/login" style={{ color: "var(--accent-gov)", textDecoration: "underline", fontWeight: 600 }}>sign in with your credentials</Link>.
+          </p>
         </div>
       </div>
 

@@ -16,7 +16,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-const db = admin.firestore();
+const db = admin.firestore("default");
 
 async function seed() {
   console.log("🌱 Seeding Civic-Right demo data...\n");

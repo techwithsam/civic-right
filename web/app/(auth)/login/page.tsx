@@ -14,16 +14,50 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const isConfigMissing =
+    !process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY === "" ||
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY === "AIzaSyDummyKeyForBuildPurposeOnly000";
+
+  const getFriendlyLoginErrorMessage = (err: unknown): string => {
+    if (!err) return "Invalid email or password. Please try again.";
+    const msg = err instanceof Error ? err.message : String(err);
+    const code = (err as { code?: string })?.code || "";
+
+    if (code === "auth/invalid-api-key" || msg.includes("auth/invalid-api-key")) {
+      return "Firebase API key is missing or invalid. Please check NEXT_PUBLIC_FIREBASE_API_KEY in web/.env.local.";
+    }
+    if (code === "auth/user-not-found" || code === "auth/wrong-password" || code === "auth/invalid-credential") {
+      return "Incorrect email or password. Please check your credentials.";
+    }
+    if (code === "auth/too-many-requests") {
+      return "Too many failed attempts. Please wait a few moments before trying again.";
+    }
+    if (code === "auth/network-request-failed") {
+      return "Network connection failed. Please check your internet connection.";
+    }
+    return msg || "Invalid email or password. Please try again.";
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (isConfigMissing) {
+      setError(
+        "Firebase is not yet configured. Please add NEXT_PUBLIC_FIREBASE_API_KEY to web/.env.local from your Firebase Console."
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       await signIn(email, password);
       // redirect happens via root page after auth state updates
       router.replace("/");
-    } catch {
-      setError("Invalid email or password. Please try again.");
+    } catch (err: unknown) {
+      console.error("Login failed:", err);
+      setError(getFriendlyLoginErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -129,10 +163,13 @@ export default function LoginPage() {
       </div>
 
       <p style={{ textAlign: "center", marginTop: 20, fontSize: 14, color: "var(--text-muted)" }}>
-        Don&apos;t have an account?{" "}
+        New citizen?{" "}
         <Link href="/register" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>
-          Create one
+          Create citizen account
         </Link>
+      </p>
+      <p style={{ textAlign: "center", marginTop: 8, fontSize: 12, color: "var(--text-muted)" }}>
+        Government officials: Sign in above with your assigned department credentials.
       </p>
     </div>
   );

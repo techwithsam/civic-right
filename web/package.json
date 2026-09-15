@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "create-gov-user": "node ../scripts/create-gov-user.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
