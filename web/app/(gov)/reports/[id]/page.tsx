@@ -9,9 +9,9 @@ import {
   type ReportStatus,
   type Authority,
 } from "@/lib/firebase/firestore";
-import { Road, Lightning, Drop, ArrowLeft, Users, CheckCircle, Circle } from "@phosphor-icons/react";
+import { RoadHorizon, Lightning, Drop, ArrowLeft, Users, CheckCircle, Circle } from "@phosphor-icons/react";
 
-const catIcon: Record<string, React.ElementType> = { roads: Road, electricity: Lightning, waste_flooding: Drop };
+const catIcon: Record<string, React.ElementType> = { roads: RoadHorizon, electricity: Lightning, waste_flooding: Drop };
 const catColor: Record<string, string> = { roads: "var(--warning)", electricity: "var(--accent-gov)", waste_flooding: "var(--accent)" };
 
 const STATUS_FLOW: { value: ReportStatus; label: string; action: string }[] = [
@@ -77,7 +77,7 @@ export default function GovReportDetail() {
 
   const currentIdx = STATUS_FLOW.findIndex((s) => s.value === report.status);
   const nextStep = STATUS_FLOW[currentIdx + 1];
-  const Icon = catIcon[report.category] ?? Road;
+  const Icon = catIcon[report.category] ?? RoadHorizon;
   const color = catColor[report.category] ?? "var(--accent)";
 
   return (

@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getAllReports, type Report, type ReportCategory } from "@/lib/firebase/firestore";
-import { Road, Lightning, Drop, Users, ArrowRight, Flag } from "@phosphor-icons/react";
+import { RoadHorizon, Lightning, Drop, Users, ArrowRight, Flag } from "@phosphor-icons/react";
 
-const catIcon: Record<ReportCategory, React.ElementType> = { roads: Road, electricity: Lightning, waste_flooding: Drop };
+const catIcon: Record<ReportCategory, React.ElementType> = { roads: RoadHorizon, electricity: Lightning, waste_flooding: Drop };
 const catColor: Record<ReportCategory, string> = { roads: "var(--warning)", electricity: "var(--accent-gov)", waste_flooding: "var(--accent)" };
 const catLabel: Record<ReportCategory, string> = { roads: "Roads", electricity: "Electricity", waste_flooding: "Waste / Flooding" };
 
