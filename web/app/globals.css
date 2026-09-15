@@ -1,0 +1,264 @@
+@import "tailwindcss";
+
+/* ─── Google Fonts ─── */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap");
+
+/* ─── Design Tokens ─── */
+:root {
+  /* Base palette — Civic Slate */
+  --bg:           #09111F;
+  --bg-elevated:  #0E1928;
+  --surface:      #13213A;
+  --surface-2:    #1A2D4A;
+  --border:       rgba(255,255,255,0.07);
+  --border-strong: rgba(255,255,255,0.14);
+
+  /* Typography */
+  --text-primary:  #F0F4FF;
+  --text-secondary: #8A9BC0;
+  --text-muted:    #4E6180;
+
+  /* Accents */
+  --accent:        #22D3A5;   /* Civic emerald — citizen, progress, life  */
+  --accent-dim:    rgba(34,211,165,0.12);
+  --accent-gov:    #4F8EF7;   /* Official blue  — government authority     */
+  --accent-gov-dim: rgba(79,142,247,0.12);
+  --danger:        #F87171;
+  --warning:       #FBBF24;
+
+  /* Status colours */
+  --status-reported:   #4E6180;
+  --status-confirmed:  #4F8EF7;
+  --status-assigned:   #A78BFA;
+  --status-progress:   #FBBF24;
+  --status-resolved:   #22D3A5;
+  --status-closed:     #374151;
+
+  /* Radii */
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-card:  0 4px 24px rgba(0,0,0,0.35), 0 1px 4px rgba(0,0,0,0.25);
+  --shadow-glow:  0 0 40px rgba(34,211,165,0.12);
+  --shadow-gov-glow: 0 0 40px rgba(79,142,247,0.10);
+}
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100dvh;
+}
+
+/* ─── Typography Scale ─── */
+.display-xl { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; }
+.display-lg { font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.025em; }
+.display-md { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
+.heading-lg  { font-size: 1.375rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.015em; }
+.heading-md  { font-size: 1.125rem; font-weight: 600; line-height: 1.3; }
+.body-lg     { font-size: 1rem; line-height: 1.7; }
+.body-md     { font-size: 0.9375rem; line-height: 1.65; }
+.body-sm     { font-size: 0.8125rem; line-height: 1.55; }
+.caption     { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.02em; }
+.mono        { font-family: "JetBrains Mono", monospace; font-size: 0.8125rem; }
+
+/* ─── Card / Surface Primitives ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* Double-bezel card */
+.card-bezel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 6px;
+  box-shadow: var(--shadow-card);
+}
+.card-bezel-inner {
+  background: var(--surface);
+  border-radius: calc(var(--radius-xl) - 6px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+
+/* ─── Buttons ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s cubic-bezier(0.32,0.72,0,1);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #031A12;
+}
+.btn-primary:hover { background: #1FBFA0; box-shadow: 0 0 24px rgba(34,211,165,0.3); }
+
+.btn-gov {
+  background: var(--accent-gov);
+  color: #fff;
+}
+.btn-gov:hover { background: #3B7EE8; box-shadow: 0 0 24px rgba(79,142,247,0.3); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+}
+.btn-ghost:hover { background: var(--surface); color: var(--text-primary); }
+
+.btn-danger {
+  background: rgba(248,113,113,0.12);
+  color: var(--danger);
+  border: 1px solid rgba(248,113,113,0.2);
+}
+.btn-danger:hover { background: rgba(248,113,113,0.2); }
+
+/* Icon wrapper inside button */
+.btn-icon-wrap {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.15);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.32,0.72,0,1);
+  flex-shrink: 0;
+}
+.btn:hover .btn-icon-wrap { transform: translate(1px, -1px) scale(1.08); }
+
+/* ─── Inputs ─── */
+.input {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.input::placeholder { color: var(--text-muted); }
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(34,211,165,0.12);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.input-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+/* ─── Status Badges ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.badge-reported   { background: rgba(78,97,128,0.18); color: #8A9BC0; }
+.badge-confirmed  { background: rgba(79,142,247,0.15); color: #4F8EF7; }
+.badge-assigned   { background: rgba(167,139,250,0.15); color: #A78BFA; }
+.badge-progress   { background: rgba(251,191,36,0.15); color: #FBBF24; }
+.badge-resolved   { background: rgba(34,211,165,0.15); color: #22D3A5; }
+.badge-closed     { background: rgba(55,65,81,0.4); color: #6B7280; }
+
+/* ─── Category Chips ─── */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: var(--radius-full);
+  font-size: 0.8125rem; font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+}
+.chip-inactive { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
+.chip-inactive:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.chip-roads    { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.25); color: #FBBF24; }
+.chip-electricity { background: rgba(79,142,247,0.12); border-color: rgba(79,142,247,0.25); color: #4F8EF7; }
+.chip-waste    { background: rgba(34,211,165,0.12); border-color: rgba(34,211,165,0.25); color: #22D3A5; }
+
+/* ─── Dividers ─── */
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+
+/* ─── Civic gradient text ─── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent), #5EEAD4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.gradient-text-gov {
+  background: linear-gradient(135deg, var(--accent-gov), #93C5FD);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Skeleton loader ─── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 50%, var(--surface) 75%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
