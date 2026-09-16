@@ -36,28 +36,71 @@ Targeted at three critical everyday infrastructure areas:
 | **Low Bandwidth & Basic Devices** | Lightweight, mobile-first Next.js 16 client, minimal bundle overhead, cached client states, and instant UI feedback. |
 | **Clear Next Steps** | Citizens are never left stranded. Every answer and report gives clear actionable pathways: assigned government agency, official contact details, and resolution timelines. |
 | **Local Relevance** | Geographically scoped to Local Government Areas (LGAs) and verified local bodies (e.g. Oyo State OYSROMA, IBEDC, Waste Management Authority), easily extensible across any African state or nation. |
-| **Privacy & Security** | Granular Firebase security rules, protected citizen identity, and role-based access for citizens vs. verified government officials. |
+| **Privacy & Security** | Granular Firebase security rules, protected citizen identity, and role-based access for citizens vs. verified government officials. Public registration is citizen-only; government accounts require administrative provisioning. |
 | **Accessibility & Plain Language** | Gemini translates dense civil service policy language into clear, structured takeaways: *What Changed*, *What It Means For You*, and *What To Do Next*. |
+
+---
+
+## 💡 Two Core End-to-End Workflows
+
+### Flow 1: Citizen Issue Reporting & Government Action Loop
+```text
+CITIZEN                                      GOVERNMENT
+Report issue
+     │
+     ▼
+AI identifies category + location
+     │
+     ▼
+Check existing nearby issues
+   ┌─┴────────────────┐
+   ▼                  ▼
+[Existing Issue?]   [New Issue?]
+   │                  │
+Confirm / Upvote    Create Report
+   │                  │
+   └─────────┬────────┘
+             ▼
+Responsible authority routed (e.g., OYSROMA, IBEDC)
+             │
+             ▼
+Government Dashboard receives prioritised report
+             │
+             ▼
+Official acknowledges & updates status (Assigned → In Progress → Resolved)
+             │
+             ▼
+Citizen sees real-time progress timeline & official notes
+```
+
+### Flow 2: Verified Citizen Policy Inquiry (RAG)
+```text
+CITIZEN
+Ask about policy (e.g., "What is the policy for repairing potholes in Ibadan?")
+     │
+     ▼
+Cosine Semantic Vector Search (Local Vector Store / documents.json)
+     │
+     ▼
+Official government sources retrieved (OYSROMA, IBEDC, Ministry of Environment)
+     │
+     ▼
+Gemini 2.0 Flash Lite synthesis (strict ground-truth prompt guard)
+     │
+     ▼
+Plain-language explanation (What changed | What it means | What to do next)
+     │
+     ▼
+Direct citations with links to official sources
+```
 
 ---
 
 ## 💡 Key Features
 
-```text
-                             CIVIC-RIGHT LOOP
-                                    │
-       ┌────────────────────────────┴────────────────────────────┐
-       ▼                                                         ▼
-[CITIZEN → GOVERNMENT]                                    [GOVERNMENT → CITIZEN]
-1. Free-text issue description                           1. Citizen asks policy/utility question
-2. Gemini classifies category, severity & area           2. Vector search retrieves official docs
-3. Spatial deduplication (upvote existing vs new)        3. Gemini synthesizes plain-language answer
-4. Real-time status tracker (Assigned → Resolved)        4. Strict source citations & direct links
-```
-
 ### 1. 🔍 Ask AI — Verified Government Information (RAG)
 - Citizens can ask natural-language questions about government policies, electricity tariff schedules, flood alerts, or road construction plans.
-- Powered by **Google Gemini 2.0 Flash Lite** and **Supabase pgvector** (`text-embedding-004`).
+- Powered by **Google Gemini 2.0 Flash Lite** and an embedded **Zero-Config Vector Store** (`text-embedding-004` / local semantic search).
 - **Zero Hallucinations**: If official documents don't cover the question, the system transparently admits it rather than inventing answers.
 - Every response includes verified source cards with direct links to official documents.
 
@@ -75,6 +118,7 @@ Targeted at three critical everyday infrastructure areas:
 - Dedicated portal for municipal authorities.
 - Prioritizes issues based on citizen confirmation counts and AI severity scoring.
 - Enables public officials to acknowledge issues, update progress notes, and signal resolution back to the community.
+- **Account Protection**: Public registration is citizen-only. Government accounts are provisioned via secure administrative command to prevent unverified actors from claiming official agency identities.
 
 ---
 
@@ -84,20 +128,24 @@ Targeted at three critical everyday infrastructure areas:
 civic-right/
 ├── web/                       # Next.js 16 Web Application
 │   ├── app/
-│   │   ├── (auth)/            # Login & Role-based Registration
+│   │   ├── (auth)/            # Login & Citizen Registration
 │   │   ├── (citizen)/         # Home, Report, Community Issues, Ask AI
 │   │   └── (gov)/             # Authority Dashboard & Management
 │   ├── lib/firebase/          # Auth context, Firestore data layer
 │   └── app/globals.css        # Civic-Slate design system & tokens
 ├── api/                       # Python FastAPI Backend
+│   ├── data/
+│   │   └── documents.json     # Seeded official government source embeddings
 │   ├── routers/
 │   │   ├── classify.py        # Gemini free-text issue classifier
 │   │   ├── ask.py             # RAG citizen inquiry router
 │   │   └── ingest.py          # Document chunking & embedding ingestion
 │   └── services/
-│       ├── gemini.py          # Gemini 2.0 Flash Lite & text-embedding-004
+│       ├── gemini.py          # Gemini 2.0 Flash Lite client & embeddings
 │       ├── rag.py             # Semantic context builder & prompt guard
-│       └── vector_store.py    # Supabase pgvector operations
+│       └── vector_store.py    # Zero-config local vector store & cosine search
+├── scripts/
+│   └── create-gov-user.mjs    # Admin CLI tool to securely provision government officials
 ├── firestore.rules            # Granular database security rules
 └── seed.js                    # Demo seed script with realistic data
 ```
@@ -110,7 +158,7 @@ civic-right/
 | **Database & Auth** | Firebase Auth & Cloud Firestore | Real-time synchronization and user role management |
 | **Backend API** | Python 3.11 + FastAPI | Async high-performance AI backend |
 | **LLM & Embeddings** | Google Gemini 2.0 Flash Lite + `text-embedding-004` | Fast, cost-effective classification and structured synthesis |
-| **Vector Database** | Supabase (PostgreSQL + pgvector) | Cosine-similarity retrieval of official source chunks |
+| **Vector Store** | Zero-Config Local Vector Store (`api/data/documents.json`) | Cosine-similarity retrieval of official source chunks (zero DB setup) |
 
 ---
 
@@ -120,14 +168,13 @@ civic-right/
 - **Node.js**: v18.17+ or v20+
 - **Python**: 3.11+
 - **Firebase Project**: (configured with Auth and Firestore)
-- **Google Gemini API Key**: [Get a Gemini API Key](https://aistudio.google.com/)
-- **Supabase Project**: (with `pgvector` enabled)
+- **Google Gemini API Key**: [Get a Gemini API Key](https://aistudio.google.com/) *(optional for local testing; built-in heuristic fallbacks included)*
 
 ---
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/your-username/civic-right.git
+git clone https://github.com/techwithsam/civic-right.git
 cd civic-right
 ```
 
@@ -169,15 +216,14 @@ cd ../api
 python3.11 -m venv venv
 source venv/bin/activate
 
-# Install dependencies
+# Install dependencies (zero external DB required!)
 pip install -r requirements.txt
 ```
 
 Configure `api/.env`:
 ```env
 GEMINI_API_KEY="your-google-gemini-api-key"
-SUPABASE_URL="https://your-project.supabase.co"
-SUPABASE_SERVICE_KEY="your-supabase-service-role-key"
+ADMIN_KEY="civic-admin-secret"
 ```
 
 Start the FastAPI server:
@@ -188,8 +234,23 @@ Interactive Swagger docs will be available at [http://localhost:8000/docs](http:
 
 ---
 
-### 4. Seed Demo Data (Optional)
-To populate the database with demo authorities (e.g. Oyo State Public Works, IBEDC, Waste Management) and realistic issues:
+### 4. Provisioning Government Accounts (Admin CLI)
+To maintain security and prevent unverified public users from claiming official authority roles, government accounts are provisioned via administrative CLI:
+
+```bash
+# From the project root:
+node scripts/create-gov-user.mjs <email> <password> "<Full Name>" "<Agency Name>" "<State>" "<LGA>"
+
+# Example:
+node scripts/create-gov-user.mjs works@oyostate.gov.ng SecurePass2026! "Engr. Tunde Adeleke" "Oyo State Ministry of Works" "Oyo" "Ibadan North"
+```
+
+Government officials can then log in at `/login` and access their dedicated portal at `/dashboard`.
+
+---
+
+### 5. Seed Demo Data (Optional)
+To populate Firestore with demo authorities and realistic community issues:
 ```bash
 node seed.js
 ```
@@ -202,8 +263,8 @@ node seed.js
 | :--- | :--- |
 | **1. Uniqueness** | Rather than a passive bulletin board or a generic chatbot, Civic-Right implements a **closed-loop civic operating model**. It merges RAG-verified policy retrieval with crowd-deduplicated civic issue reporting and verifiable government workflows. |
 | **2. Scalability** | The data model is partitioned cleanly by `state` and `lga` (Local Government Area). Adapting Civic-Right from Ibadan, Nigeria to Nairobi, Kenya or Accra, Ghana requires simply ingesting that municipality's gazettes and seeding its local agency directory. |
-| **3. AI Coding Usage** | Built end-to-end utilizing advanced AI agentic workflows: automated Next.js UI scaffolding, Gemini Flash Lite prompt engineering, pgvector schema creation, and automated validation. |
-| **4. Presentation & Polish** | Features a custom-crafted design system (*Civic Slate*), smooth state transitions, mobile-first navigation, full error states, and production build verification (`npm run build`). |
+| **3. AI Coding Usage** | Built end-to-end utilizing advanced AI agentic workflows: automated Next.js UI scaffolding, Gemini Flash Lite prompt engineering, zero-config vector similarity search, and automated validation. |
+| **4. Presentation & Polish** | Features a custom-crafted design system (*Civic Slate*), smooth state transitions, mobile-first navigation, full error states, resilient offline/fallback handlers, and clean production build verification (`npm run build`). |
 
 ---
 

@@ -6,7 +6,7 @@ Accepts a free-text description, returns structured civic issue data.
 import json
 from fastapi import APIRouter
 from pydantic import BaseModel
-from services.gemini import get_gemini_client
+from services.gemini import get_gemini_client, settings
 
 router = APIRouter()
 

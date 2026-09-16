@@ -48,7 +48,7 @@ async def ingest_source(
     x_admin_key: str = Header(default=""),
 ):
     # Basic admin key check
-    if x_admin_key != settings.supabase_service_key[:16]:
+    if settings.admin_key and x_admin_key != settings.admin_key:
         raise HTTPException(status_code=403, detail="Unauthorized")
 
     # Generate deterministic source_id
