@@ -7,6 +7,7 @@ import {
   confirmReport,
   hasUserConfirmed,
   getAuthority,
+  findAuthority,
   type Report,
   type Authority,
 } from "@/lib/firebase/firestore";
@@ -69,6 +70,8 @@ export default function IssueDetailPage() {
       setLoading(false);
       if (r.authorityId) {
         getAuthority(r.authorityId).then(setAuthority);
+      } else {
+        findAuthority(r.state, r.category).then(setAuthority);
       }
     });
     return unsub;
@@ -184,13 +187,30 @@ export default function IssueDetailPage() {
                 }}>
                   {done ? <CheckCircle size={14} color="#031A12" weight="fill" /> : <Circle size={14} color="var(--text-muted)" />}
                 </div>
-                <div>
+                <div style={{ flex: 1 }}>
                   <p style={{
                     fontSize: 14, fontWeight: active ? 700 : 500,
                     color: done ? "var(--text-primary)" : "var(--text-muted)",
                   }}>
                     {STATUS_LABELS[s]}
                   </p>
+                  {active && report.latestNote && (
+                    <div style={{
+                      marginTop: 6,
+                      padding: "8px 12px",
+                      borderRadius: "var(--radius-sm)",
+                      background: "rgba(79,142,247,0.1)",
+                      border: "1px solid rgba(79,142,247,0.2)",
+                      fontSize: 13,
+                      color: "var(--text-primary)",
+                      lineHeight: 1.45,
+                    }}>
+                      <strong style={{ color: "var(--accent-gov)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: 2 }}>
+                        Official Update
+                      </strong>
+                      {report.latestNote}
+                    </div>
+                  )}
                 </div>
               </div>
             );

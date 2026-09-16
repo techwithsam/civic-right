@@ -43,37 +43,99 @@ class ClassifyResponse(BaseModel):
     raw_description: str
 
 
+def _heuristic_classify(description: str, user_location: str | None) -> dict:
+    desc_lower = description.lower()
+
+    # Determine category
+    electricity_words = ["power", "light", "electricity", "transformer", "wire", "voltage", "blackout", "nepa", "ibedc", "meter", "phase", "outage"]
+    waste_words = ["flood", "flooding", "drain", "drainage", "water", "gutter", "waste", "refuse", "dump", "trash", "canal", "sewage", "dirt"]
+    roads_words = ["road", "pothole", "potholes", "tar", "traffic", "bridge", "street", "culvert", "express", "asphalt", "crater"]
+
+    if any(w in desc_lower for w in electricity_words):
+        category = "electricity"
+        default_title = "Electricity Outage or Infrastructure Fault"
+    elif any(w in desc_lower for w in waste_words):
+        category = "waste_flooding"
+        default_title = "Waste or Drainage / Flooding Hazard"
+    else:
+        category = "roads"
+        default_title = "Road or Infrastructure Damage"
+
+    # Determine severity
+    high_words = ["urgent", "danger", "hazardous", "fatal", "accident", "death", "destroy", "emergency", "collapse", "severe", "fire", "exploded", "overflowing"]
+    low_words = ["minor", "small", "cleaning", "slight"]
+    if any(w in desc_lower for w in high_words):
+        severity = "high"
+    elif any(w in desc_lower for w in low_words):
+        severity = "low"
+    else:
+        severity = "medium"
+
+    # Generate short title from first sentence
+    first_sentence = description.split(".")[0].strip()
+    words = first_sentence.split()
+    title = " ".join(words[:8]) if len(words) > 0 else default_title
+
+    return {
+        "category": category,
+        "location": user_location,
+        "problem": description[:200],
+        "severity": severity,
+        "title": title,
+    }
+
+
 @router.post("/", response_model=ClassifyResponse)
 async def classify_issue(request: ClassifyRequest):
-    model = get_gemini_client()
+    # If Gemini API key is not configured, use heuristic classifier
+    if not settings.gemini_api_key or settings.gemini_api_key.strip() == "":
+        data = _heuristic_classify(request.description, request.user_location)
+        return ClassifyResponse(
+            category=data["category"],
+            location=data["location"],
+            problem=data["problem"],
+            severity=data["severity"],
+            title=data["title"],
+            raw_description=request.description,
+        )
 
-    context = f"User description: {request.description}"
-    if request.user_location:
-        context += f"\nUser's general location: {request.user_location}"
+    try:
+        model = get_gemini_client()
+        context = f"User description: {request.description}"
+        if request.user_location:
+            context += f"\nUser's general location: {request.user_location}"
 
-    response = model.generate_content(
-        [CLASSIFY_PROMPT, context],
-        generation_config={
-            "temperature": 0.1,
-            "max_output_tokens": 256,
-        },
-    )
+        response = model.generate_content(
+            [CLASSIFY_PROMPT, context],
+            generation_config={
+                "temperature": 0.1,
+                "max_output_tokens": 256,
+            },
+        )
 
-    # Parse JSON from response
-    text = response.text.strip()
-    # Strip markdown code fences if present
-    if text.startswith("```"):
-        text = text.split("```")[1]
-        if text.startswith("json"):
-            text = text[4:]
+        text = response.text.strip()
+        if text.startswith("```"):
+            text = text.split("```")[1]
+            if text.startswith("json"):
+                text = text[4:]
 
-    data = json.loads(text)
-
-    return ClassifyResponse(
-        category=data.get("category", "roads"),
-        location=data.get("location"),
-        problem=data.get("problem", request.description[:200]),
-        severity=data.get("severity", "medium"),
-        title=data.get("title", "Civic Issue"),
-        raw_description=request.description,
-    )
+        data = json.loads(text)
+        return ClassifyResponse(
+            category=data.get("category", "roads"),
+            location=data.get("location") or request.user_location,
+            problem=data.get("problem", request.description[:200]),
+            severity=data.get("severity", "medium"),
+            title=data.get("title", "Civic Issue"),
+            raw_description=request.description,
+        )
+    except Exception as e:
+        # Graceful fallback on LLM quota or parsing issue
+        data = _heuristic_classify(request.description, request.user_location)
+        return ClassifyResponse(
+            category=data["category"],
+            location=data["location"],
+            problem=data["problem"],
+            severity=data["severity"],
+            title=data["title"],
+            raw_description=request.description,
+        )

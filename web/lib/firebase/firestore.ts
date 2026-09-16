@@ -44,6 +44,7 @@ export interface Report {
   confirmationCount: number;
   authorityId: string | null;
   status: ReportStatus;
+  latestNote?: string;
   aiExtracted: {
     problem: string;
     severity: string;
@@ -177,6 +178,39 @@ export async function hasUserConfirmed(
   return snap.exists();
 }
 
+export const DEFAULT_AUTHORITIES: Record<ReportCategory, Authority> = {
+  roads: {
+    id: "oyo-ministry-works",
+    name: "Oyo State Ministry of Works & Transport",
+    type: "State Ministry",
+    state: "Oyo",
+    lga: "Ibadan North",
+    categories: ["roads"],
+    contact: "08055001234",
+    website: "https://oyostate.gov.ng/works",
+  },
+  electricity: {
+    id: "ibedc-ibadan",
+    name: "Ibadan Electricity Distribution Company (IBEDC)",
+    type: "Electricity Distribution Company",
+    state: "Oyo",
+    lga: "Ibadan North",
+    categories: ["electricity"],
+    contact: "070042332123",
+    website: "https://ibedc.com",
+  },
+  waste_flooding: {
+    id: "ibadan-north-lga",
+    name: "Ibadan Waste Management & Environmental Sanitation Authority",
+    type: "Local Government Agency",
+    state: "Oyo",
+    lga: "Ibadan North",
+    categories: ["waste_flooding"],
+    contact: "08033456789",
+    website: "https://oyostate.gov.ng/waste",
+  },
+};
+
 // ─── Nearby reports ─────────────────────────────────────────────────────────
 
 export async function findNearbyReports(
@@ -184,43 +218,77 @@ export async function findNearbyReports(
   location: string,
   state: string
 ): Promise<Report[]> {
-  // Simple text-match approach for hackathon — query same state + category
-  const q = query(
-    collection(db, "reports"),
-    where("state", "==", state),
-    where("category", "==", category),
-    where("status", "!=", "closed"),
-    orderBy("confirmationCount", "desc"),
-    limit(5)
-  );
-  const snap = await getDocs(q);
-  const reports = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Report));
-  // Filter by location keyword overlap
-  const locWords = location.toLowerCase().split(/\s+/);
-  return reports.filter((r) =>
-    locWords.some((w) => r.location.toLowerCase().includes(w))
-  );
+  try {
+    const q = query(
+      collection(db, "reports"),
+      where("category", "==", category),
+      limit(20)
+    );
+    const snap = await getDocs(q);
+    const reports = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() } as Report))
+      .filter((r) => r.status !== "closed" && (!state || r.state === state));
+
+    // Sort by confirmation count descending
+    reports.sort((a, b) => (b.confirmationCount || 0) - (a.confirmationCount || 0));
+
+    // Filter by location keyword overlap if location is provided
+    if (!location.trim()) return reports.slice(0, 5);
+    const locWords = location.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+    if (locWords.length === 0) return reports.slice(0, 5);
+
+    const matches = reports.filter((r) =>
+      locWords.some(
+        (w) =>
+          r.location?.toLowerCase().includes(w) ||
+          r.title?.toLowerCase().includes(w) ||
+          r.description?.toLowerCase().includes(w)
+      )
+    );
+    return (matches.length > 0 ? matches : reports).slice(0, 5);
+  } catch (err) {
+    console.warn("findNearbyReports query error, falling back:", err);
+    return [];
+  }
 }
 
 // ─── Authorities ─────────────────────────────────────────────────────────────
 
 export async function getAuthority(id: string): Promise<Authority | null> {
-  const snap = await getDoc(doc(db, "authorities", id));
-  if (!snap.exists()) return null;
-  return { id: snap.id, ...snap.data() } as Authority;
+  try {
+    const snap = await getDoc(doc(db, "authorities", id));
+    if (snap.exists()) return { id: snap.id, ...snap.data() } as Authority;
+  } catch (err) {
+    console.warn("getAuthority doc fetch error, checking defaults:", err);
+  }
+
+  // Fallback to default authority by ID
+  for (const cat of Object.keys(DEFAULT_AUTHORITIES) as ReportCategory[]) {
+    if (DEFAULT_AUTHORITIES[cat].id === id) {
+      return DEFAULT_AUTHORITIES[cat];
+    }
+  }
+  return null;
 }
 
 export async function findAuthority(
   state: string,
   category: ReportCategory
 ): Promise<Authority | null> {
-  const q = query(
-    collection(db, "authorities"),
-    where("state", "==", state),
-    where("categories", "array-contains", category),
-    limit(1)
-  );
-  const snap = await getDocs(q);
-  if (snap.empty) return null;
-  return { id: snap.docs[0].id, ...snap.docs[0].data() } as Authority;
+  try {
+    const q = query(
+      collection(db, "authorities"),
+      where("categories", "array-contains", category),
+      limit(1)
+    );
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      return { id: snap.docs[0].id, ...snap.docs[0].data() } as Authority;
+    }
+  } catch (err) {
+    console.warn("findAuthority query error, using default:", err);
+  }
+
+  // Guaranteed fallback for the category
+  return DEFAULT_AUTHORITIES[category] || null;
 }
