@@ -3,7 +3,7 @@
 **Topic**: Tax Reform  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-09-14  
-**Official URL**: https://jtb.gov.ng/harmonization-charter  
+**Official URL**: https://jtb.gov.ng  
 
 ## 1. Ban on Illegal Roadblocks and Haulage Extortion
 The Joint Tax Board (JTB), representing the revenue authorities of all 36 States and the FCT, strictly prohibits the mounting of roadblocks, checkpoints, and non-state revenue task forces collecting multiple road taxes, transit levies, and loading fees along inter-state and intra-state transport corridors.

@@ -3,7 +3,7 @@
 **Topic**: Tax Reform  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-06-18  
-**Official URL**: https://finance.gov.ng/tax-reform/guidelines-2025  
+**Official URL**: https://finance.gov.ng  
 
 ## 1. Small Business Exemption Thresholds
 Under the 2025 Tax Acts transition framework, micro and small enterprises with an annual gross turnover of ₦50,000,000 (Fifty Million Naira) or less are explicitly exempt from Companies Income Tax (CIT) and Capital Gains Tax. 

@@ -3,7 +3,7 @@
 **Topic**: Infrastructure  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-04-18  
-**Official URL**: https://ferma.gov.ng/citizens-charter/pothole-response  
+**Official URL**: https://ferma.gov.ng  
 
 ## 1. Rapid Intervention Response Targets
 The Federal Emergency Road Maintenance Agency (FERMA) Citizens' Service Charter establishes enforceable service level agreements (SLAs) for remediating hazardous potholes and failed asphalt sections along designated economic transport corridors.

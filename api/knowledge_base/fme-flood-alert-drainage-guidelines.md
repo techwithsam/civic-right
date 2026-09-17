@@ -3,7 +3,7 @@
 **Topic**: Infrastructure  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-05-30  
-**Official URL**: https://environment.gov.ng/advisories/flood-prevention-2025  
+**Official URL**: https://environment.gov.ng  
 
 ## 1. Flood Prevention and Drainage Clearance Obligations
 The Federal Ministry of Environment, in partnership with state environmental protection agencies, outlines statutory flood mitigation obligations for municipal governments, property developers, and residential communities.

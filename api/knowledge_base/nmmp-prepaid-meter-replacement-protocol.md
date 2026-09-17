@@ -3,7 +3,7 @@
 **Topic**: Electricity  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-06-05  
-**Official URL**: https://power.gov.ng/metering/replacement-standards  
+**Official URL**: https://power.gov.ng  
 
 ## 1. Replacement of Faulty and Obsolete Prepaid Meters
 Under the joint directives of the Federal Ministry of Power and NERC, electricity customers whose prepaid meters develop faults (such as burnt terminal blocks, token generation errors, STS rollover issues, or firmware defects) are entitled to free technical evaluation and replacement.

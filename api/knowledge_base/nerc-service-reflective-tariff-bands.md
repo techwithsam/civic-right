@@ -3,7 +3,7 @@
 **Topic**: Electricity  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-04-03  
-**Official URL**: https://nerc.gov.ng/tariffs/service-bands-2025  
+**Official URL**: https://nerc.gov.ng  
 
 ## 1. Service-Based Tariff (SBT) Feeder Bands
 NERC mandates that all electricity distribution companies (DisCos including IBEDC, EKEDC, IKEDC, AEDC, etc.) must charge end-users strictly based on actual hours of electricity supplied per feeder line.

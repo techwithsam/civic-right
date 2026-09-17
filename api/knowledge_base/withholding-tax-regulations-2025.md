@@ -3,7 +3,7 @@
 **Topic**: Tax Reform  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-07-01  
-**Official URL**: https://firs.gov.ng/regulations/withholding-tax-2025  
+**Official URL**: https://firs.gov.ng  
 
 ## 1. Complete Exemption for Small and Micro Businesses
 To curb working-capital depletion among small contractors, vendors, and service providers, the Withholding Tax (WHT) Regulations 2025 introduce a complete exemption for transactions carried out by small enterprises.

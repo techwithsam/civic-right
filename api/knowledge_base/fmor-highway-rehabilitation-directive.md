@@ -3,7 +3,7 @@
 **Topic**: Infrastructure  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-02-15  
-**Official URL**: https://works.gov.ng/policies/arterial-interventions  
+**Official URL**: https://works.gov.ng  
 
 ## 1. Classification of Road Network Responsibilities
 To resolve jurisdictional confusion between federal, state, and local government councils, the Federal Ministry of Works maintains clear boundaries regarding road maintenance and capital rehabilitation.

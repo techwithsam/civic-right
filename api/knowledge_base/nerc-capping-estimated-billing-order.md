@@ -3,7 +3,7 @@
 **Topic**: Electricity  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-05-12  
-**Official URL**: https://nerc.gov.ng/orders/estimated-billing-caps  
+**Official URL**: https://nerc.gov.ng  
 
 ## 1. Ceiling on Monthly Unmetered Charges
 Under NERC's revised Capping of Estimated Bills Order, distribution companies are legally prohibited from issuing outrageous, arbitrary, or unverified estimated electricity bills to residential and commercial customers awaiting prepaid meters.

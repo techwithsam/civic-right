@@ -3,7 +3,7 @@
 **Topic**: Infrastructure  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-07-10  
-**Official URL**: https://oyostate.gov.ng/works/oysroma-charter  
+**Official URL**: https://oyostate.gov.ng  
 
 ## 1. Zero-Pothole Campaign and State Road Network Maintenance
 The Oyo State Road Maintenance Agency (OYSROMA) is tasked with continuous rehabilitation, emergency patching, and erosion protection across state roads in Ibadan, Oyo, Ogbomoso, Iseyin, and Saki.

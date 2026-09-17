@@ -3,7 +3,7 @@
 **Topic**: Electricity  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-03-22  
-**Official URL**: https://nerc.gov.ng/regulations/disconnection-rights  
+**Official URL**: https://nerc.gov.ng  
 
 ## 1. Disconnection Procedure and Mandatory Notice
 Under the NERC Customer Protection Regulations, an electricity distribution company cannot disconnect a customer's power supply arbitrarily or without following statutory due process.

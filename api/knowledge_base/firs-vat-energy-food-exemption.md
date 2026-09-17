@@ -3,7 +3,7 @@
 **Topic**: Tax Reform  
 **Source Type**: Official Government Publication  
 **Publication Date**: 2025-08-20  
-**Official URL**: https://firs.gov.ng/orders/vat-exemption-essentials  
+**Official URL**: https://firs.gov.ng  
 
 ## 1. Zero-Rating and Exemption for Essential Household Expenditures
 Pursuant to statutory powers under the Value Added Tax Act and executive orders, the Federal Government mandates a 0% VAT rate and full exemption on essential items to alleviate the cost of living.
