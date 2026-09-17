@@ -99,10 +99,11 @@ Direct citations with links to official sources
 ## 💡 Key Features
 
 ### 1. 🔍 Ask AI — Verified Government Information (RAG)
-- Citizens can ask natural-language questions about government policies, electricity tariff schedules, flood alerts, or road construction plans.
-- Powered by **Google Gemini 2.0 Flash Lite** and an embedded **Zero-Config Vector Store** (`text-embedding-004` / local semantic search).
-- **Zero Hallucinations**: If official documents don't cover the question, the system transparently admits it rather than inventing answers.
-- Every response includes verified source cards with direct links to official documents.
+- Citizens ask natural-language questions about government policies, electricity tariff schedules, flood alerts, or road construction plans.
+- Powered by **Google Gemini 2.5 Flash** with a curated **Civic Knowledge Base** of 12 official Nigerian government documents.
+- **Retrieval-Augmented Generation (RAG)**: Answers are retrieved from and grounded strictly in verified publications — no hallucination.
+- Structured response format: **Summary**, full explanation, **What To Do** action list, and official source citations with publication dates.
+- **Zero Hallucinations**: If official documents don't cover the question, the system transparently admits it.
 
 ### 2. 📢 Smart Issue Reporting & Deduplication
 - **Free-text reporting**: Citizens simply describe what they see (*"Huge crater in the middle of Elebu market road causing traffic"*).
@@ -157,8 +158,8 @@ civic-right/
 | **Icons & Typography** | Phosphor Icons + Plus Jakarta Sans | Clear visual hierarchy and accessible civic typography |
 | **Database & Auth** | Firebase Auth & Cloud Firestore | Real-time synchronization and user role management |
 | **Backend API** | Python 3.11 + FastAPI | Async high-performance AI backend |
-| **LLM & Embeddings** | Google Gemini 2.0 Flash Lite + `text-embedding-004` | Fast, cost-effective classification and structured synthesis |
-| **Vector Store** | Zero-Config Local Vector Store (`api/data/documents.json`) | Cosine-similarity retrieval of official source chunks (zero DB setup) |
+| **LLM & Embeddings** | Google Gemini 2.5 Flash + `google-genai` SDK | Fast, high-quality civic answer synthesis with structured JSON output |
+| **Civic Knowledge Base** | 12 Official Nigerian Government Documents (local RAG) | Tax Reform (FIRS/JTB), Electricity (NERC), Infrastructure (FERMA/OYSROMA) — zero external DB required |
 
 ---
 
@@ -168,7 +169,8 @@ civic-right/
 - **Node.js**: v18.17+ or v20+
 - **Python**: 3.11+
 - **Firebase Project**: (configured with Auth and Firestore)
-- **Google Gemini API Key**: [Get a Gemini API Key](https://aistudio.google.com/) *(optional for local testing; built-in heuristic fallbacks included)*
+- **Google Gemini API Key**: [Get a Gemini API Key](https://aistudio.google.com/) — used for Gemini 2.5 Flash answer synthesis and text embeddings.
+  - *(Optional for local testing — built-in lexical search and structured fallback synthesis are included)*
 
 ---
 
@@ -232,6 +234,8 @@ uvicorn main:app --reload --port 8000
 ```
 Interactive Swagger docs will be available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
+> **Note**: The Civic Knowledge Base (`api/knowledge_base/`) is pre-seeded with 12 official Nigerian government documents. No external database setup is required.
+
 ---
 
 ### 4. Provisioning Government Accounts (Admin CLI)
@@ -263,7 +267,7 @@ node seed.js
 | :--- | :--- |
 | **1. Uniqueness** | Rather than a passive bulletin board or a generic chatbot, Civic-Right implements a **closed-loop civic operating model**. It merges RAG-verified policy retrieval with crowd-deduplicated civic issue reporting and verifiable government workflows. |
 | **2. Scalability** | The data model is partitioned cleanly by `state` and `lga` (Local Government Area). Adapting Civic-Right from Ibadan, Nigeria to Nairobi, Kenya or Accra, Ghana requires simply ingesting that municipality's gazettes and seeding its local agency directory. |
-| **3. AI Coding Usage** | Built end-to-end utilizing advanced AI agentic workflows: automated Next.js UI scaffolding, Gemini Flash Lite prompt engineering, zero-config vector similarity search, and automated validation. |
+| **3. AI Coding Usage** | Built end-to-end using advanced AI agentic workflows: automated Next.js UI scaffolding, Gemini 2.5 Flash structured RAG prompting, curated 12-document official Nigerian civic knowledge base, and automated build validation. |
 | **4. Presentation & Polish** | Features a custom-crafted design system (*Civic Slate*), smooth state transitions, mobile-first navigation, full error states, resilient offline/fallback handlers, and clean production build verification (`npm run build`). |
 
 ---

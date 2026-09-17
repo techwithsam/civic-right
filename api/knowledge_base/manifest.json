@@ -1,0 +1,134 @@
+[
+  {
+    "id": "tax-acts-2025-transition",
+    "file_name": "tax-acts-2025-transition-guidelines.md",
+    "title": "General Guidelines for Implementation of Tax Acts 2025",
+    "organization": "Federal Ministry of Finance",
+    "topic": "tax",
+    "source_type": "official",
+    "url": "https://finance.gov.ng/tax-reform/guidelines-2025",
+    "published_date": "2025-06-18",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "withholding-tax-2025",
+    "file_name": "withholding-tax-regulations-2025.md",
+    "title": "Withholding Tax Regulations & Small Business Relief Order 2025",
+    "organization": "Federal Ministry of Finance & FIRS",
+    "topic": "tax",
+    "source_type": "official",
+    "url": "https://firs.gov.ng/regulations/withholding-tax-2025",
+    "published_date": "2025-07-01",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "jtb-multiple-taxation",
+    "file_name": "jtb-multiple-taxation-elimination.md",
+    "title": "Harmonized Taxes and Prohibition of Road Haulage Levies Notice",
+    "organization": "Joint Tax Board (JTB)",
+    "topic": "tax",
+    "source_type": "official",
+    "url": "https://jtb.gov.ng/harmonization-charter",
+    "published_date": "2025-09-14",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "firs-vat-modifications",
+    "file_name": "firs-vat-energy-food-exemption.md",
+    "title": "VAT Modification Order on Staple Foods, Public Transit and Clean Energy",
+    "organization": "Federal Inland Revenue Service (FIRS)",
+    "topic": "tax",
+    "source_type": "official",
+    "url": "https://firs.gov.ng/orders/vat-exemption-essentials",
+    "published_date": "2025-08-20",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "nerc-tariff-bands",
+    "file_name": "nerc-service-reflective-tariff-bands.md",
+    "title": "Multi-Year Tariff Order (MYTO) Service-Based Tariff Band Classification",
+    "organization": "Nigerian Electricity Regulatory Commission (NERC)",
+    "topic": "electricity",
+    "source_type": "official",
+    "url": "https://nerc.gov.ng/tariffs/service-bands-2025",
+    "published_date": "2025-04-03",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "nerc-estimated-billing-cap",
+    "file_name": "nerc-capping-estimated-billing-order.md",
+    "title": "Mandatory Capping Order on Estimated Billing for Unmetered Customers",
+    "organization": "Nigerian Electricity Regulatory Commission (NERC)",
+    "topic": "electricity",
+    "source_type": "official",
+    "url": "https://nerc.gov.ng/orders/estimated-billing-caps",
+    "published_date": "2025-05-12",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "nerc-customer-protection",
+    "file_name": "nerc-customer-protection-disconnection-rules.md",
+    "title": "Customer Protection Regulations on Supply Disconnection & Dispute Rights",
+    "organization": "Nigerian Electricity Regulatory Commission (NERC)",
+    "topic": "electricity",
+    "source_type": "official",
+    "url": "https://nerc.gov.ng/regulations/disconnection-rights",
+    "published_date": "2025-03-22",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "nmmp-meter-replacement",
+    "file_name": "nmmp-prepaid-meter-replacement-protocol.md",
+    "title": "National Mass Metering Programme (NMMP) Free Meter Replacement Protocol",
+    "organization": "Federal Ministry of Power & NERC",
+    "topic": "electricity",
+    "source_type": "official",
+    "url": "https://power.gov.ng/metering/replacement-standards",
+    "published_date": "2025-06-05",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "fmor-highway-directive",
+    "file_name": "fmor-highway-rehabilitation-directive.md",
+    "title": "Federal Highway Emergency Rehabilitation & Arterial Jurisdiction Framework",
+    "organization": "Federal Ministry of Works",
+    "topic": "infrastructure",
+    "source_type": "official",
+    "url": "https://works.gov.ng/policies/arterial-interventions",
+    "published_date": "2025-02-15",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "ferma-rapid-remediation",
+    "file_name": "ferma-pothole-rapid-remediation-charter.md",
+    "title": "Public Road Damage Response Charter and Pothole Remediation SLA",
+    "organization": "Federal Emergency Road Maintenance Agency (FERMA)",
+    "topic": "infrastructure",
+    "source_type": "official",
+    "url": "https://ferma.gov.ng/citizens-charter/pothole-response",
+    "published_date": "2025-04-18",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "fme-flood-alert",
+    "file_name": "fme-flood-alert-drainage-guidelines.md",
+    "title": "National Flood Early Warning Advisory & Municipal Drainage Maintenance Regulations",
+    "organization": "Federal Ministry of Environment & NIHSA",
+    "topic": "infrastructure",
+    "source_type": "official",
+    "url": "https://environment.gov.ng/advisories/flood-prevention-2025",
+    "published_date": "2025-05-30",
+    "last_checked": "2026-09-17"
+  },
+  {
+    "id": "oysroma-road-charter",
+    "file_name": "oysroma-state-road-rehabilitation-charter.md",
+    "title": "Oyo State Public Infrastructure Rapid Intervention and Road Pothole Charter",
+    "organization": "Oyo State Ministry of Works & Transport (OYSROMA)",
+    "topic": "infrastructure",
+    "source_type": "official",
+    "url": "https://oyostate.gov.ng/works/oysroma-charter",
+    "published_date": "2025-07-10",
+    "last_checked": "2026-09-17"
+  }
+]
