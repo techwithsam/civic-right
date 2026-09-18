@@ -76,22 +76,22 @@ Citizen sees real-time progress timeline & official notes
 ### Flow 2: Verified Citizen Policy Inquiry (RAG)
 ```text
 CITIZEN
-Ask about policy (e.g., "What is the policy for repairing potholes in Ibadan?")
+Ask about policy (e.g., "What does the new tax reform mean for my small business?")
      │
      ▼
-Cosine Semantic Vector Search (Local Vector Store / documents.json)
+Semantic Knowledge Base Search (Curated Official Gazettes & Portals)
      │
      ▼
-Official government sources retrieved (OYSROMA, IBEDC, Ministry of Environment)
+Official government sources retrieved (Ministry of Finance, NERC, FIRS, FERMA)
      │
      ▼
-Gemini 2.0 Flash Lite synthesis (strict ground-truth prompt guard)
+Gemini 2.5 Flash synthesis (strict ground-truth prompt guard)
      │
      ▼
-Plain-language explanation (What changed | What it means | What to do next)
+Plain-language explanation (Summary | Full Answer | What To Do checklist)
      │
      ▼
-Direct citations with links to official sources
+Official Sources with in-app Gazette Reader & verified Ministry links
 ```
 
 ---

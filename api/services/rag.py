@@ -88,6 +88,7 @@ def _synthesize_local_response(
 
     sources = [
         {
+            "id": d.get("id", ""),
             "title": d.get("title", ""),
             "organization": d.get("organization", ""),
             "url": d.get("url", ""),
@@ -168,23 +169,26 @@ async def answer_with_rag(
         raw_text = response.text.strip()
         data = json.loads(raw_text)
 
-        # Ensure all expected fields exist
+        # Always return verified sources from matched_docs to guarantee official metadata and prevent hallucinated/404 URLs
+        verified_sources = [
+            {
+                "id": d.get("id", ""),
+                "title": d.get("title", ""),
+                "organization": d.get("organization", ""),
+                "url": d.get("url", ""),
+                "topic": d.get("topic", ""),
+                "source_type": d.get("source_type", "official"),
+                "published_date": d.get("published_date", ""),
+                "last_checked": d.get("last_checked", ""),
+            }
+            for d in matched_docs
+        ]
+
         return {
             "answer": data.get("answer", ""),
             "summary": data.get("summary", ""),
             "what_to_do": data.get("what_to_do", ""),
-            "sources": data.get("sources", [
-                {
-                    "title": d.get("title", ""),
-                    "organization": d.get("organization", ""),
-                    "url": d.get("url", ""),
-                    "topic": d.get("topic", ""),
-                    "source_type": "official",
-                    "published_date": d.get("published_date", ""),
-                    "last_checked": d.get("last_checked", ""),
-                }
-                for d in matched_docs
-            ]),
+            "sources": verified_sources,
         }
 
     except Exception as e:

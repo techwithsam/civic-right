@@ -4,10 +4,10 @@ Answers citizen questions about government policies using grounded official sour
 """
 
 from typing import List, Optional, Union
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from services.rag import answer_with_rag
-from services.knowledge_base import load_manifest
+from services.knowledge_base import load_manifest, get_document_content
 
 router = APIRouter()
 
@@ -18,6 +18,7 @@ class AskRequest(BaseModel):
 
 
 class SourceItem(BaseModel):
+    id: Optional[str] = None
     title: str
     organization: str
     url: str
@@ -25,6 +26,10 @@ class SourceItem(BaseModel):
     source_type: str = "official"
     published_date: Optional[str] = None
     last_checked: Optional[str] = None
+
+
+class SourceDetail(SourceItem):
+    content: str
 
 
 class AskResponse(BaseModel):
@@ -51,6 +56,7 @@ async def list_sources():
     manifest = load_manifest()
     return [
         SourceItem(
+            id=item.get("id"),
             title=item.get("title", ""),
             organization=item.get("organization", ""),
             url=item.get("url", ""),
@@ -61,3 +67,26 @@ async def list_sources():
         )
         for item in manifest
     ]
+
+
+@router.get("/sources/{source_id}", response_model=SourceDetail)
+async def get_source_document(source_id: str):
+    """Returns complete official policy document text and metadata."""
+    manifest = load_manifest()
+    doc_item = next((item for item in manifest if item.get("id") == source_id), None)
+    if not doc_item:
+        raise HTTPException(status_code=404, detail="Official source document not found")
+    
+    content = get_document_content(doc_item.get("file_name", ""))
+    return SourceDetail(
+        id=doc_item.get("id"),
+        title=doc_item.get("title", ""),
+        organization=doc_item.get("organization", ""),
+        url=doc_item.get("url", ""),
+        topic=doc_item.get("topic"),
+        source_type=doc_item.get("source_type", "official"),
+        published_date=doc_item.get("published_date"),
+        last_checked=doc_item.get("last_checked"),
+        content=content,
+    )
+
