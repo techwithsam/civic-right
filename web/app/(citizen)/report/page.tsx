@@ -190,8 +190,6 @@ export default function ReportPage() {
     }
   };
 
-  const cat = CATEGORIES.find((c) => c.value === category) ?? CATEGORIES[0];
-
   return (
     <div style={{ maxWidth: 560, margin: "0 auto", padding: "28px 20px" }}>
       <h1 className="heading-lg" style={{ marginBottom: 6 }}>Report an issue</h1>

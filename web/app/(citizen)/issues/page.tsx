@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/firebase/auth";
 import { getReportsByLGA, type Report, type ReportCategory } from "@/lib/firebase/firestore";
@@ -84,11 +83,16 @@ export default function IssuesPage() {
 
   useEffect(() => {
     if (!civicUser) return;
-    setLoading(true);
+    let isCurrent = true;
     getReportsByLGA(civicUser.state, civicUser.lga).then((r) => {
-      setReports(r);
-      setLoading(false);
+      if (isCurrent) {
+        setReports(r);
+        setLoading(false);
+      }
     });
+    return () => {
+      isCurrent = false;
+    };
   }, [civicUser]);
 
   const filtered = filter === "all" ? reports : reports.filter((r) => r.category === filter);

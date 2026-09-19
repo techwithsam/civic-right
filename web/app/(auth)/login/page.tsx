@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/firebase/auth";
 import { Eye, EyeSlash, ArrowRight } from "@phosphor-icons/react";
 
 export default function LoginPage() {
-  const { signIn, civicUser } = useAuth();
+  const { signIn } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
