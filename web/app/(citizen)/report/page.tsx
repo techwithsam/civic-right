@@ -33,7 +33,7 @@ const CATEGORIES: { value: ReportCategory; label: string; icon: React.ElementTyp
   { value: "waste_flooding", label: "Waste / Flooding", icon: Drop, color: "var(--accent)" },
 ];
 
-const API_URL = process.env.NEXT_PUBLIC_AI_API_URL ?? "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_AI_API_URL || "/api/ai";
 
 type Step = "describe" | "classifying" | "existing" | "form" | "done";
 

@@ -45,7 +45,7 @@ interface UserMessage {
 
 type Message = UserMessage | AssistantMessage;
 
-const API_URL = process.env.NEXT_PUBLIC_AI_API_URL ?? "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_AI_API_URL || "/api/ai";
 
 const TOPICS = [
   { id: null, label: "All Topics", icon: null },

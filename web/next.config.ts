@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
       { hostname: "lh3.googleusercontent.com" },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/ai/:path*",
+        destination: "http://localhost:8000/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
